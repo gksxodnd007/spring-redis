@@ -6,7 +6,7 @@ import org.springframework.core.io.support.PathMatchingResourcePatternResolver;
 import org.springframework.core.io.support.PropertiesLoaderUtils;
 import org.springframework.data.redis.connection.jedis.JedisConnectionFactory;
 import org.springframework.data.redis.core.RedisTemplate;
-import org.springframework.data.redis.serializer.GenericToStringSerializer;
+import org.springframework.data.redis.serializer.Jackson2JsonRedisSerializer;
 import org.springframework.data.redis.serializer.StringRedisSerializer;
 import redis.clients.jedis.JedisPoolConfig;
 
@@ -42,7 +42,7 @@ public class RedisConfig {
 
         final JedisConnectionFactory jedisConnectionFactory = new JedisConnectionFactory();
 
-        jedisConnectionFactory.setHostName(redisConfig.getProperty("redis.hostName"));
+        jedisConnectionFactory.setHostName(redisConfig.getProperty("redis.hostname"));
         jedisConnectionFactory.setPassword(redisConfig.getProperty("redis.password"));
         jedisConnectionFactory.setPort(Integer.parseInt(redisConfig.getProperty("redis.port")));
         jedisConnectionFactory.setUsePool(Boolean.parseBoolean(redisConfig.getProperty("redis.pool.use")));
@@ -59,10 +59,10 @@ public class RedisConfig {
 
         redisTemplate.setConnectionFactory(jedisConnectionFactory());
         redisTemplate.setKeySerializer(new StringRedisSerializer());
-        redisTemplate.setValueSerializer(new GenericToStringSerializer<>(Object.class));
+        redisTemplate.setValueSerializer(new Jackson2JsonRedisSerializer<>(Object.class));
 
         redisTemplate.setHashKeySerializer(new StringRedisSerializer());
-        redisTemplate.setHashValueSerializer(new GenericToStringSerializer<>(Object.class));
+        redisTemplate.setHashValueSerializer(new Jackson2JsonRedisSerializer<>(Object.class));
         redisTemplate.afterPropertiesSet();
 
         return redisTemplate;
